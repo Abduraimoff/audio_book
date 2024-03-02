@@ -1,20 +1,18 @@
 import 'package:audio_book/core/audio/audio_service.dart';
+import 'package:audio_book/feature/presentation/bloc/audio_bloc/audio_bloc.dart';
 import 'package:audio_book/service_locator.dart' as di;
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class AudiBookItem extends StatelessWidget {
-  final bool isPlaying;
   final int orderNumber;
   final VoidCallback onTap;
-  // MediaItem representing the current song
   final MediaItem item;
-  // Index of the song in the list
   final int index;
 
   const AudiBookItem({
     super.key,
-    this.isPlaying = false,
     required this.orderNumber,
     required this.onTap,
     required this.item,
@@ -23,15 +21,21 @@ class AudiBookItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final state = context.watch<AudioBloc>().state;
     final audioHandler = di.sl<MyAudioHandler>();
     final theme = Theme.of(context);
-    final color = isPlaying ? Colors.amber[900] : Colors.white;
     return StreamBuilder<MediaItem?>(
       stream: audioHandler.mediaItem,
       builder: (BuildContext context, AsyncSnapshot<MediaItem?> snapshot) {
         if (snapshot.data != null) {
+          bool isSelected = snapshot.data == item;
           return GestureDetector(
-            onTap: onTap,
+            onTap: () {
+              if (snapshot.data! != item) {
+                audioHandler.skipToQueueItem(index);
+              }
+              onTap();
+            },
             child: Container(
               color: Colors.transparent,
               child: Row(
@@ -42,26 +46,40 @@ class AudiBookItem extends StatelessWidget {
                     style: theme.textTheme.bodyLarge!.copyWith(
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
-                      color: color,
+                      color: (state.isPlaying && isSelected)
+                          ? Colors.amber[900]
+                          : Colors.white,
                     ),
                   ),
                   const SizedBox(width: 10),
                   Text(
-                    'Self Care',
+                    item.title,
                     style: theme.textTheme.bodyLarge!.copyWith(
-                      color: color,
+                      color: (state.isPlaying && isSelected)
+                          ? Colors.amber[900]
+                          : Colors.white,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
                   const Spacer(),
-                  isPlaying
-                      ? const Row(
-                          children: [
-                            ThreeDotAnimation(),
-                            SizedBox(width: 10),
-                          ],
-                        )
-                      : Icon(Icons.more_vert_outlined, color: color)
+                  GestureDetector(
+                    onTap: () {
+                      print('object');
+                    },
+                    child: Row(
+                      children: [
+                        if (state.isPlaying && isSelected) ...[
+                          const ThreeDotAnimation(),
+                          const SizedBox(width: 10),
+                        ] else ...[
+                          const Icon(
+                            Icons.more_vert_outlined,
+                            color: Colors.white,
+                          )
+                        ],
+                      ],
+                    ),
+                  )
                 ],
               ),
             ),
@@ -77,6 +95,7 @@ class ThreeDotAnimation extends StatefulWidget {
   const ThreeDotAnimation({super.key});
 
   @override
+  // ignore: library_private_types_in_public_api
   _ThreeDotAnimationState createState() => _ThreeDotAnimationState();
 }
 

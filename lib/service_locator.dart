@@ -3,7 +3,7 @@ import 'package:audio_book/feature/data/datasources/remote/book_remote_data_sour
 import 'package:audio_book/feature/data/repositories/book_repository_impl.dart';
 import 'package:audio_book/feature/domain/repositories/book_repository.dart';
 import 'package:audio_book/feature/domain/usecases/get_books.dart';
-import 'package:audio_book/feature/presentation/screens/home/bloc/audio_bloc/audio_bloc.dart';
+import 'package:audio_book/feature/presentation/bloc/audio_bloc/audio_bloc.dart';
 import 'package:audio_book/feature/presentation/screens/nav/bloc/navbar_bloc.dart';
 import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
@@ -21,7 +21,7 @@ Future<void> init() async {
   //! Repository
   sl.registerLazySingleton<BookRepository>(() => BookRepositoryImpl(sl()));
   sl.registerLazySingleton<BookRemoteDataSource>(
-    () => BookRemoteDataSourceImpl(),
+    () => BookRemoteDataSourceImpl(sl()),
   );
 
   //! Core

@@ -1,5 +1,5 @@
 import 'package:audio_book/core/audio/audio_service.dart';
-import 'package:audio_book/feature/presentation/screens/home/bloc/audio_bloc/audio_bloc.dart';
+import 'package:audio_book/feature/presentation/bloc/audio_bloc/audio_bloc.dart';
 import 'package:audio_book/feature/presentation/screens/nav/bloc/navbar_bloc.dart';
 import 'package:audio_book/feature/presentation/screens/nav/nav_screen.dart';
 import 'package:audio_book/feature/presentation/theme/app_theme.dart';
