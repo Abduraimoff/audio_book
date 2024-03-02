@@ -1,6 +1,7 @@
 import 'package:audio_book/core/audio/audio_service.dart';
 import 'package:audio_book/feature/presentation/bloc/audio_bloc/audio_bloc.dart';
-import 'package:audio_book/feature/presentation/screens/nav/bloc/navbar_bloc.dart';
+import 'package:audio_book/feature/presentation/bloc/navbar_bloc/navbar_bloc.dart';
+import 'package:audio_book/feature/presentation/bloc/storage_cubit/storage_cubit.dart';
 import 'package:audio_book/feature/presentation/screens/nav/nav_screen.dart';
 import 'package:audio_book/feature/presentation/theme/app_theme.dart';
 import 'package:audio_service/audio_service.dart';
@@ -40,13 +41,12 @@ class _MainAppState extends State<MainApp> {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider<NavBarBloc>(
-          create: (context) => di.sl(),
-        ),
+        BlocProvider<NavBarBloc>(create: (context) => di.sl()),
         BlocProvider<AudioBloc>(
           lazy: false,
           create: (context) => di.sl()..add(AudioLoadEvent()),
         ),
+        BlocProvider<StorageCubit>(create: (context) => di.sl<StorageCubit>()),
       ],
       child: MediaQuery(
         data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),

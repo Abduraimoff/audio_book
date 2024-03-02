@@ -54,6 +54,7 @@ class HomeScreen extends StatelessWidget {
                             );
                             Navigator.push(context, materialPageRoute);
                           },
+                          book: state.books[index],
                           orderNumber: index + 1,
                           item: mediaItems[index],
                           index: index,

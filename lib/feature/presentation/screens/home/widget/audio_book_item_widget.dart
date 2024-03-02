@@ -1,5 +1,7 @@
 import 'package:audio_book/core/audio/audio_service.dart';
+import 'package:audio_book/feature/domain/enitites/book_entity.dart';
 import 'package:audio_book/feature/presentation/bloc/audio_bloc/audio_bloc.dart';
+import 'package:audio_book/feature/presentation/bloc/storage_cubit/storage_cubit.dart';
 import 'package:audio_book/service_locator.dart' as di;
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
@@ -7,6 +9,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 class AudiBookItem extends StatelessWidget {
   final int orderNumber;
+  final BookEntity book;
   final VoidCallback onTap;
   final MediaItem item;
   final int index;
@@ -17,6 +20,7 @@ class AudiBookItem extends StatelessWidget {
     required this.onTap,
     required this.item,
     required this.index,
+    required this.book,
   });
 
   @override
@@ -63,8 +67,8 @@ class AudiBookItem extends StatelessWidget {
                   ),
                   const Spacer(),
                   GestureDetector(
-                    onTap: () {
-                      print('object');
+                    onTapDown: (TapDownDetails details) {
+                      showPopupMenu(context, details.globalPosition, book);
                     },
                     child: Row(
                       children: [
@@ -89,6 +93,37 @@ class AudiBookItem extends StatelessWidget {
       },
     );
   }
+}
+
+void showPopupMenu(BuildContext context, Offset tapPosition, BookEntity book) {
+  final RenderBox overlay =
+      Overlay.of(context).context.findRenderObject() as RenderBox;
+  final RelativeRect position =
+      RelativeRect.fromSize(tapPosition & const Size(0, 0), overlay.size);
+
+  showMenu(
+    context: context,
+    position: position,
+    items: [
+      const PopupMenuItem(
+        value: 'download',
+        child: Row(
+          children: [
+            Icon(Icons.download, color: Colors.black),
+            SizedBox(width: 10),
+            Text(
+              'Download MP3',
+              style: TextStyle(fontSize: 14, color: Colors.black),
+            ),
+          ],
+        ),
+      ),
+    ],
+  ).then((value) {
+    if (value != null && value == 'download') {
+      context.read<StorageCubit>().download(book);
+    }
+  });
 }
 
 class ThreeDotAnimation extends StatefulWidget {

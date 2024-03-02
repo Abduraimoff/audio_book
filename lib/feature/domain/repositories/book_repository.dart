@@ -4,4 +4,5 @@ import 'package:dartz/dartz.dart';
 
 abstract class BookRepository {
   Future<Either<Failure, List<BookEntity>>> getBooks();
+  Future<Either<Failure, String?>> downloadBook(String url);
 }

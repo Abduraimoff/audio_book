@@ -13,59 +13,55 @@ class PlayerControlWidgets extends StatelessWidget {
     final state = context.watch<AudioBloc>().state;
     final playing = state.isPlaying;
     final audioHandler = di.sl<MyAudioHandler>();
-    if (playing) {
-      return Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 10),
-        child: Row(
-          children: [
-            IconButton(
-              onPressed: () => bloc.add(AudioShuffleEvent()),
-              icon: Icon(
-                Icons.shuffle_rounded,
-                color: state.isShuffleModeEnabled
-                    ? Colors.amber[900]
-                    : Colors.white,
-              ),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 10),
+      child: Row(
+        children: [
+          IconButton(
+            onPressed: () => bloc.add(AudioShuffleEvent()),
+            icon: Icon(
+              Icons.shuffle_rounded,
+              color:
+                  state.isShuffleModeEnabled ? Colors.amber[900] : Colors.white,
             ),
-            const Spacer(),
-            IconButton(
-              onPressed: () => audioHandler.skipToPrevious(),
-              icon: const Icon(Icons.skip_previous_rounded),
+          ),
+          const Spacer(),
+          IconButton(
+            onPressed: () => audioHandler.skipToPrevious(),
+            icon: const Icon(Icons.skip_previous_rounded),
+          ),
+          const SizedBox(width: 20),
+          IconButton(
+            onPressed: () {
+              if (playing) {
+                audioHandler.pause();
+              } else {
+                audioHandler.play();
+              }
+            },
+            icon: Icon(
+              playing ? Icons.pause_circle_filled : Icons.play_circle_filled,
             ),
-            const SizedBox(width: 20),
-            IconButton(
-              onPressed: () {
-                if (playing) {
-                  audioHandler.pause();
-                } else {
-                  audioHandler.play();
-                }
-              },
-              icon: Icon(
-                playing ? Icons.pause_circle_filled : Icons.play_circle_filled,
-              ),
-              iconSize: 50,
-              color: Colors.amber[900],
+            iconSize: 50,
+            color: Colors.amber[900],
+          ),
+          const SizedBox(width: 20),
+          IconButton(
+            onPressed: () => audioHandler.skipToNext(),
+            icon: const Icon(Icons.skip_next_rounded),
+          ),
+          const Spacer(),
+          IconButton(
+            onPressed: () => bloc.add(AudioRepeatEvent()),
+            icon: Icon(
+              Icons.repeat_rounded,
+              color: state.repeatState == RepeatState.repeatSong
+                  ? Colors.amber[900]
+                  : Colors.white,
             ),
-            const SizedBox(width: 20),
-            IconButton(
-              onPressed: () => audioHandler.skipToNext(),
-              icon: const Icon(Icons.skip_next_rounded),
-            ),
-            const Spacer(),
-            IconButton(
-              onPressed: () => bloc.add(AudioRepeatEvent()),
-              icon: Icon(
-                Icons.repeat_rounded,
-                color: state.repeatState == RepeatState.repeatSong
-                    ? Colors.amber[900]
-                    : Colors.white,
-              ),
-            ),
-          ],
-        ),
-      );
-    }
-    return const SizedBox.shrink();
+          ),
+        ],
+      ),
+    );
   }
 }

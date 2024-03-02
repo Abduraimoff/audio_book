@@ -16,21 +16,21 @@ class AudioBloc extends Bloc<AudioEvent, AudioState> {
     on<AudioLoadEvent>(_loadEvent);
     on<AudioRepeatEvent>(_repeatEvent);
     on<AudioShuffleEvent>(_shuffleEvent);
+    on<AudioAddQueueItemsEvent>(_addQueueItemsEvent);
     on<AudioControlPlayEvent>(_controlPlayEvent);
     audioHandler.playbackState.stream.listen(_handlePlaybackState);
   }
-
   Future<void> _loadEvent(
     AudioLoadEvent event,
     Emitter emit,
   ) async {
     emit(state.copyWith(isLoading: true));
     final failureOrBooks = await getBooks.call(NoParams());
-    failureOrBooks.fold(
-      (error) {
-        emit(state.copyWith(error: 'No data'));
+    await failureOrBooks.fold(
+      (error) async {
+        emit(state.copyWith(error: 'No data', isLoading: false));
       },
-      (books) {
+      (books) async {
         final mediaItems = books.map((book) {
           double secondsDouble = double.parse(book.duration);
           int seconds = secondsDouble.toInt();
@@ -44,11 +44,31 @@ class AudioBloc extends Bloc<AudioEvent, AudioState> {
             artUri: Uri.parse(book.image),
           );
         }).toList();
-        audioHandler.addQueueItems(mediaItems);
+        await audioHandler.addQueueItems(mediaItems);
 
         emit(state.copyWith(books: books, isLoading: false));
       },
     );
+  }
+
+  Future<void> _addQueueItemsEvent(
+    AudioAddQueueItemsEvent event,
+    Emitter emit,
+  ) async {
+    final mediaItems = event.books.map((book) {
+      double secondsDouble = double.parse(book.duration);
+      int seconds = secondsDouble.toInt();
+      Duration duration = Duration(seconds: seconds);
+      return MediaItem(
+        id: book.id.toString(),
+        album: book.album,
+        title: book.title,
+        duration: duration,
+        extras: <String, dynamic>{'url': book.url},
+        artUri: Uri.parse(book.image),
+      );
+    }).toList();
+    await audioHandler.addQueueItems(mediaItems);
   }
 
   Future<void> _repeatEvent(

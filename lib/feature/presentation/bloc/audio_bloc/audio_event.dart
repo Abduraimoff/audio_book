@@ -13,6 +13,15 @@ class AudioRepeatEvent extends AudioEvent {}
 
 class AudioShuffleEvent extends AudioEvent {}
 
+class AudioAddQueueItemsEvent extends AudioEvent {
+  final List<BookEntity> books;
+
+  const AudioAddQueueItemsEvent({required this.books});
+
+  @override
+  List<Object> get props => [books];
+}
+
 class AudioControlPlayEvent extends AudioEvent {
   final bool isPlaying;
 

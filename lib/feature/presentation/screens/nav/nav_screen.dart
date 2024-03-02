@@ -1,5 +1,6 @@
+import 'package:audio_book/feature/presentation/bloc/navbar_bloc/navbar_bloc.dart';
+import 'package:audio_book/feature/presentation/bloc/storage_cubit/storage_cubit.dart';
 import 'package:audio_book/feature/presentation/screens/home/home_screen.dart';
-import 'package:audio_book/feature/presentation/screens/nav/bloc/navbar_bloc.dart';
 import 'package:audio_book/feature/presentation/screens/saved/saved_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -23,7 +24,12 @@ class _NavScreenState extends State<NavScreen> {
       body: _screens[activeIndex],
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: activeIndex,
-        onTap: (value) => navBloc.add(NavBarEvent(value)),
+        onTap: (value) {
+          navBloc.add(NavBarEvent(value));
+          if (value == 1) {
+            context.read<StorageCubit>().getBooks();
+          }
+        },
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.book), label: ''),
           BottomNavigationBarItem(icon: Icon(Icons.storage), label: ''),

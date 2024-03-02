@@ -11,3 +11,12 @@ class NoParams extends Equatable {
   @override
   List<Object?> get props => [];
 }
+
+class DownloadParams extends Equatable {
+  final String url;
+
+  const DownloadParams({required this.url});
+
+  @override
+  List<Object?> get props => [url];
+}
