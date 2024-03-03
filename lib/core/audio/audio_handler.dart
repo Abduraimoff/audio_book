@@ -9,7 +9,7 @@ class MyAudioHandler extends BaseAudioHandler with QueueHandler, SeekHandler {
   //create an instance of the AudioPlayer class from just_audio package
   final AudioPlayer _player;
 
-  final _playlist = ConcatenatingAudioSource(children: []);
+  final playlist = ConcatenatingAudioSource(children: []);
 
   MyAudioHandler(this._player) {
     _loadEmptyPlaylist();
@@ -21,10 +21,14 @@ class MyAudioHandler extends BaseAudioHandler with QueueHandler, SeekHandler {
 
   Future<void> _loadEmptyPlaylist() async {
     try {
-      await _player.setAudioSource(_playlist);
+      await _player.setAudioSource(playlist);
     } catch (e) {
       print("Error: $e");
     }
+  }
+
+  void addMediaItem(MediaItem item) async {
+    mediaItem.add(item);
   }
 
   void _notifyAudioHandlerAboutPlaybackEvents() {
@@ -105,7 +109,7 @@ class MyAudioHandler extends BaseAudioHandler with QueueHandler, SeekHandler {
   Future<void> addQueueItems(List<MediaItem> mediaItems) async {
     // manage Just Audio
     final audioSource = mediaItems.map(_createAudioSource);
-    _playlist.addAll(audioSource.toList());
+    playlist.addAll(audioSource.toList());
 
     // notify system
     final newQueue = queue.value..addAll(mediaItems);
@@ -116,7 +120,7 @@ class MyAudioHandler extends BaseAudioHandler with QueueHandler, SeekHandler {
   Future<void> addQueueItem(MediaItem mediaItem) async {
     // manage Just Audio
     final audioSource = _createAudioSource(mediaItem);
-    _playlist.add(audioSource);
+    playlist.add(audioSource);
 
     // notify system
     final newQueue = queue.value..add(mediaItem);
@@ -133,7 +137,7 @@ class MyAudioHandler extends BaseAudioHandler with QueueHandler, SeekHandler {
   @override
   Future<void> removeQueueItemAt(int index) async {
     // manage Just Audio
-    _playlist.removeAt(index);
+    playlist.removeAt(index);
 
     // notify system
     final newQueue = queue.value..removeAt(index);

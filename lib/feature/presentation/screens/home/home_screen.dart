@@ -48,7 +48,8 @@ class HomeScreen extends StatelessWidget {
                             .toList();
                         return AudiBookItem(
                           onTap: () {
-                            audioHandler.playMediaItem(mediaItems[index]);
+                            audioHandler.addMediaItem(mediaItems[index]);
+                            audioHandler.play();
                             var materialPageRoute = MaterialPageRoute(
                               builder: (context) => const DetailScreen(),
                             );

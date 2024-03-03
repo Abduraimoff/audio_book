@@ -8,6 +8,7 @@ import 'package:audio_book/service_locator.dart' as di;
 import 'package:audio_service/audio_service.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:just_audio/just_audio.dart';
 
 part 'storage_state.dart';
 
@@ -35,8 +36,21 @@ class StorageCubit extends Cubit<StorageState> {
         artUri: Uri.parse(book.image),
       );
     }).toList();
-    await audioHandler.addQueueItems(mediaItems);
+    for (var mediaItem in mediaItems) {
+      final audioSource = _createAudioSource(mediaItem);
+      if (!audioHandler.playlist.children.contains(audioSource)) {
+        await audioHandler.addQueueItem(mediaItem);
+      }
+    }
+
     emit(state.copyWith(books: books, isLoading: false));
+  }
+
+  UriAudioSource _createAudioSource(MediaItem mediaItem) {
+    return AudioSource.uri(
+      Uri.parse(mediaItem.extras!['url'] as String),
+      tag: mediaItem,
+    );
   }
 
   void download(BookEntity book) async {
