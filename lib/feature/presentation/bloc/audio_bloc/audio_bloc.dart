@@ -1,4 +1,4 @@
-import 'package:audio_book/core/audio/audio_service.dart';
+import 'package:audio_book/core/audio/audio_handler.dart';
 import 'package:audio_book/core/usecases/usecase.dart';
 import 'package:audio_book/feature/domain/enitites/book_entity.dart';
 import 'package:audio_book/feature/domain/usecases/get_books.dart';
@@ -45,6 +45,7 @@ class AudioBloc extends Bloc<AudioEvent, AudioState> {
           );
         }).toList();
         await audioHandler.addQueueItems(mediaItems);
+        print(audioHandler.queue);
 
         emit(state.copyWith(books: books, isLoading: false));
       },
@@ -55,7 +56,7 @@ class AudioBloc extends Bloc<AudioEvent, AudioState> {
     AudioAddQueueItemsEvent event,
     Emitter emit,
   ) async {
-    final mediaItems = event.books.map((book) {
+    final mediaItems = state.books.map((book) {
       double secondsDouble = double.parse(book.duration);
       int seconds = secondsDouble.toInt();
       Duration duration = Duration(seconds: seconds);

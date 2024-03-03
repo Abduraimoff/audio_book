@@ -1,4 +1,4 @@
-import 'package:audio_book/core/audio/audio_service.dart';
+import 'package:audio_book/core/audio/audio_handler.dart';
 import 'package:audio_book/feature/presentation/bloc/storage_cubit/storage_cubit.dart';
 import 'package:audio_book/feature/presentation/screens/detail/detail_screen.dart';
 import 'package:audio_book/feature/presentation/screens/home/widget/audio_book_item_widget.dart';
@@ -47,7 +47,7 @@ class SavedScreen extends StatelessWidget {
                             .toList();
                         return AudiBookItem(
                           onTap: () {
-                            audioHandler.play();
+                            audioHandler.playMediaItem(mediaItems[index]);
                             var materialPageRoute = MaterialPageRoute(
                               builder: (context) => const DetailScreen(),
                             );

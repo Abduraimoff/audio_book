@@ -1,5 +1,5 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'package:audio_book/core/audio/audio_service.dart';
+import 'package:audio_book/core/audio/audio_handler.dart';
 import 'package:audio_book/feature/presentation/screens/detail/widgets/control_widgets.dart';
 import 'package:audio_book/feature/presentation/screens/detail/widgets/progress_bar_widget.dart';
 import 'package:audio_book/service_locator.dart' as di;
