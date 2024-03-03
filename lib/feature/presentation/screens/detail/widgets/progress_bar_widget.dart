@@ -18,7 +18,7 @@ class ProgressBarWidget extends StatelessWidget {
         if (positionSnapshot.data != null) {
           return ProgressBar(
             progress: positionSnapshot.data!,
-            total: item.duration!,
+            total: item.duration ?? Duration.zero,
             onSeek: (position) {
               audioHandler.seek(position);
             },
